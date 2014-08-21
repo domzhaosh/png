@@ -31,7 +31,8 @@ if [ -d ${BINPATH} ]; then
 	rm -rf ${BINPATH}
 fi
 
-cd "${CURRENTPATH}/../zlib"
+# TODO:  if the zlib path is changed, we should change it here
+cd "${CURRENTPATH}/../zlib-1.2.8"
 
 
 # set the compilers
