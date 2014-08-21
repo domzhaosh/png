@@ -6,5 +6,5 @@ export PATH=$ANDROID_SDK_ROOT:$PATH
 export PATH=$ANDROID_SDK_ROOT/tools:$ANDROID_SDK_ROOT/platform-tools:$PATH
 export ANT_ROOT=/usr/local/bin
 
-cd ./zlib
-$(NDK-build)
+cd zlib
+NDK-build
