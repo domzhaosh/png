@@ -814,8 +814,8 @@
  * must match that used in the build, or we must be using pnglibconf.h.prebuilt:
  */
 #if PNG_ZLIB_VERNUM != 0 && PNG_ZLIB_VERNUM != ZLIB_VERNUM
-#  error ZLIB_VERNUM != PNG_ZLIB_VERNUM \
-      "-I (include path) error: see the notes in pngpriv.h"
+// #  error ZLIB_VERNUM != PNG_ZLIB_VERNUM \
+//       "-I (include path) error: see the notes in pngpriv.h"
    /* This means that when pnglibconf.h was built the copy of zlib.h that it
     * used is not the same as the one being used here.  Because the build of
     * libpng makes decisions to use inflateInit2 and inflateReset2 based on the

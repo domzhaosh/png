@@ -20,18 +20,8 @@ LOCAL_SRC_FILES :=  \
   ../../../libpng/pngwio.c \
   ../../../libpng/pngwrite.c \
   ../../../libpng/pngwtran.c \
-  ../../../libpng/pngwutil.c \
+  ../../../libpng/pngwutil.c  \
 
-LOCAL_C_INCLUDES :=  \
-	    $(LOCAL_PATH)/../../../libpng/png.h \
-	    $(LOCAL_PATH)/../../../libpng/pngconf.h \
-	    $(LOCAL_PATH)/../../../libpng/pngdebug.h \
-	    $(LOCAL_PATH)/../../../libpng/pnginfo.h \
-	    $(LOCAL_PATH)/../../../libpng/pngpriv.h \
-	    $(LOCAL_PATH)/../../../libpng/pngstruct.h \
-
-LOCAL_EXPORT_LDLIBS := -lz
-
-LOCAL_CPPFLAGS +=-fexceptions
+LOCAL_EXPORT_LDLIBS +=  -lz
 
 include $(BUILD_STATIC_LIBRARY)
