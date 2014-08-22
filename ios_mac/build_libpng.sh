@@ -171,6 +171,7 @@ echo "Building libpng for ${PLATFORM} ${ARCH}, finished"
 # # Universal Library
 echo "Build universal library..."
 
+mkdir -p ${OUTPATH}/prebuilt/ios
 # ios
 $LIPO -create ${BINPATH}/iPhoneSimulator${SDKVERSION}-i386.sdk/lib/libpng.a ${BINPATH}/iPhoneSimulator${SDKVERSION}-x86_64.sdk/lib/libpng.a ${BINPATH}/iPhoneOS${SDKVERSION}-armv7.sdk/lib/libpng.a  ${BINPATH}/iPhoneOS${SDKVERSION}-armv7s.sdk/lib/libpng.a ${BINPATH}/iPhoneOS${SDKVERSION}-arm64.sdk/lib/libpng.a -output ${OUTPATH}/prebuilt/ios/libpng.a
 # remove debugging info
