@@ -7,7 +7,7 @@ export PATH=$ANDROID_SDK_ROOT/tools:$ANDROID_SDK_ROOT/platform-tools:$PATH
 export ANT_ROOT=/usr/local/bin
 export NDK_MODULE_PATH=`pwd`
 echo $NDK_MODULE_PATH
-
+ 
 cd libpng
 
 NDK-build
