@@ -48,210 +48,85 @@ export ZLIBLIB=${CURRENTPATH}/zlib/prebuilt/ios
 export ZLIBINC=${ZLIBLIB}/include
 export LD_LIBRARY_PATH="$ZLIBLIB:$LD_LIBRARY_PATH"
 
+
+function compile_ios_static_library {
+    PLATFORM_ARCH=$1
+    ARCH=${PLATFORM_ARCH}
+    PLATFORM=$2
+    PLATFORM_TARGET=${PLATFORM}
+    echo "Building libpng for ${PLATFORM} ${SDKVERSION} ${ARCH}"
+    echo "Please stand by..."
+
+    # test to see if the actual sdk exists
+    ios_sdk_root="$xcode_base"/$PLATFORM_TARGET.platform/Developer/SDKs/$PLATFORM_TARGET"$ios_sdk_version".sdk
+
+    if ! test -d "$ios_sdk_root" ; then
+        echo "Invalid SDK version"
+    fi
+
+    export LDFLAGS="-isysroot $ios_sdk_root -arch $PLATFORM_ARCH -v -L$ZLIBLIB"
+    export CFLAGS="-isysroot $ios_sdk_root -arch $PLATFORM_ARCH -miphoneos-version-min=$ios_deploy_version -I$ios_sdk_root/usr/include -pipe -Wno-implicit-int -Wno-return-type"
+    export CXXFLAGS="$CFLAGS -I$ZLIBINC"
+    export CPPFLAGS=""
+
+    mkdir -p "${BINPATH}/${PLATFORM}${SDKVERSION}-${ARCH}.sdk"
+
+    LOG="${BINPATH}/${PLATFORM}${SDKVERSION}-${ARCH}.sdk/build-libpng-${VERSION}.log"
+
+    echo "Configure libpng for ${PLATFORM} ${SDKVERSION} ${ARCH}"
+
+    if [ "$1" = "armv7" ] || [ "$1" = "armv7s" ]; then
+        ./configure -prefix=${BINPATH}/${PLATFORM}${SDKVERSION}-${ARCH}.sdk --host=${ARCH}-apple-darwin --enable-shared=no --enable-static=yes 
+    elif [ "$1" = "arm64" ] || [ "$1" = "x86-64" ]; then
+        ./configure -prefix=${BINPATH}/${PLATFORM}${SDKVERSION}-${ARCH}.sdk --host=arm-apple-darwin --enable-shared=no --enable-static=yes 
+    else
+        ./configure -prefix=${BINPATH}/${PLATFORM}${SDKVERSION}-${ARCH}.sdk --enable-shared=no --enable-static=yes 
+    fi
+    
+
+    echo "Make libpng for ${PLATFORM} ${SDKVERSION} ${ARCH}"
+
+    make  >> "${LOG}" 2>&1
+    make install  >> "${LOG}" 2>&1
+    make clean >> "${LOG}" 2>&1
+
+    echo "Building libpng for ${PLATFORM} ${SDKVERSION} ${ARCH}, finished"
+}
+
 ############
 # iPhone Simulator
-PLATFORM_ARCH=i386
-ARCH=${PLATFORM_ARCH}
-PLATFORM="iPhoneSimulator"
-PLATFORM_TARGET=${PLATFORM}
-echo "Building libpng for ${PLATFORM} ${SDKVERSION} ${ARCH}"
-echo "Please stand by..."
+# #############
+compile_ios_static_library "i386" "iPhoneSimulator"
+# #############
 
-# test to see if the actual sdk exists
-ios_sdk_root="$xcode_base"/$PLATFORM_TARGET.platform/Developer/SDKs/$PLATFORM_TARGET"$ios_sdk_version".sdk
 
-if ! test -d "$ios_sdk_root" ; then
-    echo "Invalid SDK version"
-fi
+# #############
+# # iPhoneOS armv7
+# #############
+compile_ios_static_library "armv7" "iPhoneOS"
+# #############
 
-export LDFLAGS="-isysroot $ios_sdk_root -arch $PLATFORM_ARCH -v -L$ZLIBLIB"
-export CFLAGS="-isysroot $ios_sdk_root -arch $PLATFORM_ARCH -miphoneos-version-min=$ios_deploy_version -I$ios_sdk_root/usr/include -pipe -Wno-implicit-int -Wno-return-type"
-export CXXFLAGS="$CFLAGS -I$ZLIBINC"
-export CPPFLAGS=""
+# #############
+# # iPhoneOS armv7s
+# #############
+compile_ios_static_library "armv7s" "iPhoneOS"
 
-#export CC="${DEVELOPER}/Platforms/${PLATFORM}.platform/Developer/usr/bin/gcc"
-#export CFLAGS="-arch ${ARCH} -isysroot ${DEVELOPER}/Platforms/${PLATFORM}.platform/Developer/SDKs/${PLATFORM}${SDKVERSION}.sdk"
-mkdir -p "${BINPATH}/${PLATFORM}${SDKVERSION}-${ARCH}.sdk"
+# #############
+# # iPhoneOS arm64
+compile_ios_static_library "arm64" "iPhoneOS"
+# #############
 
-LOG="${BINPATH}/${PLATFORM}${SDKVERSION}-${ARCH}.sdk/build-libpng-${VERSION}.log"
 
-echo "Configure libpng for ${PLATFORM} ${SDKVERSION} ${ARCH}"
+# #############
+# # iPhoneSimulator x86_64
+compile_ios_static_library "x86_64" "iPhoneSimulator"
+# #############
 
-./configure -prefix=${BINPATH}/${PLATFORM}${SDKVERSION}-${ARCH}.sdk --enable-shared=no --enable-static=yes
 
-echo "Make libpng for ${PLATFORM} ${SDKVERSION} ${ARCH}"
 
-make  >> "${LOG}" 2>&1
-make install  >> "${LOG}" 2>&1
-make clean >> "${LOG}" 2>&1
+# #############
 
-echo "Building libpng for ${PLATFORM} ${SDKVERSION} ${ARCH}, finished"
-
-#############
-
-#############
-# iPhoneOS armv7
-PLATFORM_ARCH="armv7"
-ARCH=${PLATFORM_ARCH}
-PLATFORM="iPhoneOS"
-PLATFORM_TARGET=${PLATFORM}
-
-echo "Building libpng for ${PLATFORM} ${SDKVERSION} ${ARCH}"
-echo "Please stand by..."
-
-# test to see if the actual sdk exists
-ios_sdk_root="$xcode_base"/$PLATFORM_TARGET.platform/Developer/SDKs/$PLATFORM_TARGET"$ios_sdk_version".sdk
-
-if ! test -d "$ios_sdk_root" ; then
-    echo "Invalid SDK version"
-fi
-
-export LDFLAGS="-isysroot $ios_sdk_root -arch $PLATFORM_ARCH -v -L$ZLIBLIB"
-export CFLAGS="-isysroot $ios_sdk_root -arch $PLATFORM_ARCH -miphoneos-version-min=$ios_deploy_version -I$ios_sdk_root/usr/include -pipe -Wno-implicit-int -Wno-return-type"
-export CXXFLAGS="$CFLAGS -I$ZLIBINC"
-export CPPFLAGS=""
-
-mkdir -p "${BINPATH}/${PLATFORM}${SDKVERSION}-${ARCH}.sdk"
-
-LOG="${BINPATH}/${PLATFORM}${SDKVERSION}-${ARCH}.sdk/build-libpng-${VERSION}.log"
-
-echo "Configure libpng for ${PLATFORM} ${SDKVERSION} ${ARCH}"
-
-./configure -prefix=${BINPATH}/${PLATFORM}${SDKVERSION}-${ARCH}.sdk --host=${ARCH}-apple-darwin --enable-shared=no --enable-static=yes # > "${LOG}" 2>&1
-
-echo "Make libpng for ${PLATFORM} ${SDKVERSION} ${ARCH}"
-
-make  >> "${LOG}" 2>&1
-make install  >> "${LOG}" 2>&1
-make clean  >> "${LOG}" 2>&1
-
-echo "Building libpng for ${PLATFORM} ${SDKVERSION} ${ARCH}, finished"
-#############
-
-#############
-# iPhoneOS armv7s
-PLATFORM_ARCH="armv7s"
-ARCH=${PLATFORM_ARCH}
-PLATFORM="iPhoneOS"
-PLATFORM_TARGET=${PLATFORM}
-
-echo "Building libpng for ${PLATFORM} ${SDKVERSION} ${ARCH}"
-echo "Please stand by..."
-
-# test to see if the actual sdk exists
-ios_sdk_root="$xcode_base"/$PLATFORM_TARGET.platform/Developer/SDKs/$PLATFORM_TARGET"$ios_sdk_version".sdk
-
-if ! test -d "$ios_sdk_root" ; then
-    echo "Invalid SDK version"
-fi
-
-export LDFLAGS="-isysroot $ios_sdk_root -arch $PLATFORM_ARCH -v -L$ZLIBLIB"
-export CFLAGS="-isysroot $ios_sdk_root -arch $PLATFORM_ARCH -miphoneos-version-min=$ios_deploy_version -I$ios_sdk_root/usr/include -pipe -Wno-implicit-int -Wno-return-type"
-export CXXFLAGS="$CFLAGS -I$ZLIBINC"
-export CPPFLAGS=""
-
-mkdir -p "${BINPATH}/${PLATFORM}${SDKVERSION}-${ARCH}.sdk"
-
-LOG="${BINPATH}/${PLATFORM}${SDKVERSION}-${ARCH}.sdk/build-libpng-${VERSION}.log"
-
-echo "Configure libpng for ${PLATFORM} ${SDKVERSION} ${ARCH}"
-
-./configure -prefix=${BINPATH}/${PLATFORM}${SDKVERSION}-${ARCH}.sdk --host=${ARCH}-apple-darwin --enable-shared=no --enable-static=yes # > "${LOG}" 2>&1
-
-echo "Make libpng for ${PLATFORM} ${SDKVERSION} ${ARCH}"
-
-make >> "${LOG}" 2>&1
-make install  >> "${LOG}" 2>&1
-make clean >> "${LOG}" 2>&1
-
-echo "Building libpng for ${PLATFORM} ${SDKVERSION} ${ARCH}, finished"
-#############
-
-
-#############
-# iPhoneOS arm64
-PLATFORM_ARCH="arm64"
-ARCH=${PLATFORM_ARCH}
-PLATFORM="iPhoneOS"
-PLATFORM_TARGET=${PLATFORM}
-
-echo "Building libpng for ${PLATFORM} ${SDKVERSION} ${ARCH}"
-echo "Please stand by..."
-
-# test to see if the actual sdk exists
-ios_sdk_root="$xcode_base"/$PLATFORM_TARGET.platform/Developer/SDKs/$PLATFORM_TARGET"$ios_sdk_version".sdk
-
-if ! test -d "$ios_sdk_root" ; then
-echo "Invalid SDK version"
-fi
-
-
-
-export LDFLAGS="-isysroot $ios_sdk_root -arch $PLATFORM_ARCH -v -L$ZLIBLIB"
-export CFLAGS="-isysroot $ios_sdk_root -arch $PLATFORM_ARCH -miphoneos-version-min=$ios_deploy_version -I$ios_sdk_root/usr/include -pipe -Wno-implicit-int -Wno-return-type"
-export CXXFLAGS="$CFLAGS -I$ZLIBINC"
-export CPPFLAGS=""
-
-mkdir -p "${BINPATH}/${PLATFORM}${SDKVERSION}-${ARCH}.sdk"
-
-LOG="${BINPATH}/${PLATFORM}${SDKVERSION}-${ARCH}.sdk/build-libpng-${VERSION}.log"
-
-echo "Configure libpng for ${PLATFORM} ${SDKVERSION} ${ARCH}"
-
-./configure -prefix=${BINPATH}/${PLATFORM}${SDKVERSION}-${ARCH}.sdk --host=arm-apple-darwin --enable-shared=no --enable-static=yes # > "${LOG}" 2>&1
-
-echo "Make libpng for ${PLATFORM} ${SDKVERSION} ${ARCH}"
-
-make >> "${LOG}" 2>&1
-make install  >> "${LOG}" 2>&1
-make clean >> "${LOG}" 2>&1
-
-echo "Building libpng for ${PLATFORM} ${SDKVERSION} ${ARCH}, finished"
-#############
-
-
-#############
-# iPhoneSimulator x86_64
-PLATFORM_ARCH="x86_64"
-ARCH=${PLATFORM_ARCH}
-PLATFORM="iPhoneSimulator"
-PLATFORM_TARGET=${PLATFORM}
-
-echo "Building libpng for ${PLATFORM} ${SDKVERSION} ${ARCH}"
-echo "Please stand by..."
-
-# test to see if the actual sdk exists
-ios_sdk_root="$xcode_base"/$PLATFORM_TARGET.platform/Developer/SDKs/$PLATFORM_TARGET"$ios_sdk_version".sdk
-
-if ! test -d "$ios_sdk_root" ; then
-echo "Invalid SDK version"
-fi
-
-
-
-export LDFLAGS="-isysroot $ios_sdk_root -arch $PLATFORM_ARCH -v -L$ZLIBLIB"
-export CFLAGS="-isysroot $ios_sdk_root -arch $PLATFORM_ARCH -miphoneos-version-min=$ios_deploy_version -I$ios_sdk_root/usr/include -pipe -Wno-implicit-int -Wno-return-type"
-export CXXFLAGS="$CFLAGS -I$ZLIBINC"
-export CPPFLAGS=""
-
-mkdir -p "${BINPATH}/${PLATFORM}${SDKVERSION}-${ARCH}.sdk"
-
-LOG="${BINPATH}/${PLATFORM}${SDKVERSION}-${ARCH}.sdk/build-libpng-${VERSION}.log"
-
-echo "Configure libpng for ${PLATFORM} ${SDKVERSION} ${ARCH}"
-
-./configure -prefix=${BINPATH}/${PLATFORM}${SDKVERSION}-${ARCH}.sdk --host=arm-apple-darwin --enable-shared=no --enable-static=yes # > "${LOG}" 2>&1
-
-echo "Make libpng for ${PLATFORM} ${SDKVERSION} ${ARCH}"
-
-make >> "${LOG}" 2>&1
-make install  >> "${LOG}" 2>&1
-make clean >> "${LOG}" 2>&1
-
-echo "Building libpng for ${PLATFORM} ${SDKVERSION} ${ARCH}, finished"
-#############
-
-#################
+# #################
 # mac64
 PLATFORM_ARCH="x86_64"
 ARCH=${PLATFORM_ARCH}
@@ -289,11 +164,11 @@ make clean >> "${LOG}" 2>&1
 echo "Building libpng for ${PLATFORM} ${ARCH}, finished"
 
 
-#################
+# #################
 
 
-#############
-# Universal Library
+# #############
+# # Universal Library
 echo "Build universal library..."
 
 # ios
