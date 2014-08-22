@@ -182,6 +182,8 @@ mkdir -p ${OUTPATH}/prebuilt/ios/include
 cp -R ${BINPATH}/iPhoneSimulator${SDKVERSION}-i386.sdk/include/ ${OUTPATH}/prebuilt/ios/include
 
 # mac
+mkdir -p ${OUTPATH}/prebuilt/mac
+
 cp ${BINPATH}/mac-x86_64.sdk/lib/libpng.a ${OUTPATH}/prebuilt/mac/libpng.a
 $STRIP -S ${OUTPATH}/prebuilt/mac/libpng.a
 $LIPO -info ${OUTPATH}/prebuilt/mac/libpng.a
