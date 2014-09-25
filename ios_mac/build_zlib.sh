@@ -6,7 +6,7 @@
 
 VERSION="1.6.12"
 ZLIBVERSION="1.2.8"
-SDKVERSION="7.1"
+SDKVERSION=$(xcodebuild -showsdks | grep iphoneos | sort | tail -n 1 | awk '{print substr($NF,9)}')
 
 CURRENTPATH=`pwd`
 BINPATH=${CURRENTPATH}/zlib/bin
@@ -111,7 +111,7 @@ compile_ios_static_library "arm64" "iPhoneOS"
 
 #############
 # iPhoneSimulator x86_64
-compile_ios_static_library "x86_64" "iPhoneSimulator" 
+compile_ios_static_library "x86_64" "iPhoneSimulator"
 #############
 
 #################

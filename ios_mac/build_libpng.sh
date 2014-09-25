@@ -6,7 +6,7 @@
 
 VERSION="1.6.12"
 ZLIBVERSION="1.2.8"
-SDKVERSION="7.1"
+SDKVERSION=$(xcodebuild -showsdks | grep iphoneos | sort | tail -n 1 | awk '{print substr($NF,9)}')
 
 CURRENTPATH=`pwd`
 BINPATH=${CURRENTPATH}/libpng/bin
@@ -76,13 +76,13 @@ function compile_ios_static_library {
     echo "Configure libpng for ${PLATFORM} ${SDKVERSION} ${ARCH}"
 
     if [ "$1" = "armv7" ] || [ "$1" = "armv7s" ]; then
-        ./configure -prefix=${BINPATH}/${PLATFORM}${SDKVERSION}-${ARCH}.sdk --host=${ARCH}-apple-darwin --enable-shared=no --enable-static=yes 
+        ./configure -prefix=${BINPATH}/${PLATFORM}${SDKVERSION}-${ARCH}.sdk --host=${ARCH}-apple-darwin --enable-shared=no --enable-static=yes
     elif [ "$1" = "arm64" ] || [ "$1" = "x86-64" ]; then
-        ./configure -prefix=${BINPATH}/${PLATFORM}${SDKVERSION}-${ARCH}.sdk --host=arm-apple-darwin --enable-shared=no --enable-static=yes 
+        ./configure -prefix=${BINPATH}/${PLATFORM}${SDKVERSION}-${ARCH}.sdk --host=arm-apple-darwin --enable-shared=no --enable-static=yes
     else
-        ./configure -prefix=${BINPATH}/${PLATFORM}${SDKVERSION}-${ARCH}.sdk --enable-shared=no --enable-static=yes 
+        ./configure -prefix=${BINPATH}/${PLATFORM}${SDKVERSION}-${ARCH}.sdk --enable-shared=no --enable-static=yes
     fi
-    
+
 
     echo "Make libpng for ${PLATFORM} ${SDKVERSION} ${ARCH}"
 
