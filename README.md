@@ -22,9 +22,7 @@ At first, you should configure your NDK_ROOT and ANDROID_SDK_ROOT environment va
 ```
 
 ### Build Linux library
-```cpp
-./build_linux.sh
-```
+We don't need to build it from source. After installing all the dependencies of cocos2d-x, the libjpeg will also be prebuilt.
 
 
 ### Build Win32 library
