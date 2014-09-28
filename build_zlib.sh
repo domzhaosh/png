@@ -97,8 +97,8 @@ compile_ios_static_library "armv7" "iPhoneOS"
 #############
 
 #############
-# iPhoneOS armv7s
-compile_ios_static_library "armv7s" "iPhoneOS"
+# iPhoneOS armv7s if you want to compile armv7s, please uncomment the following line
+# compile_ios_static_library "armv7s" "iPhoneOS"
 
 
 
@@ -164,19 +164,17 @@ $LIPO -create ${BINPATH}/iPhoneSimulator${SDKVERSION}-i386.sdk/lib/libz.a ${BINP
 $STRIP -S ${OUTPATH}/prebuilt/ios/zlib.a
 $LIPO -info ${OUTPATH}/prebuilt/ios/zlib.a
 
-mkdir -p ${OUTPATH}/prebuilt/ios/include
-cp -R ${BINPATH}/iPhoneSimulator${SDKVERSION}-i386.sdk/include/ ${OUTPATH}/prebuilt/ios/include
+mkdir -p ${OUTPATH}/prebuilt/include/ios
+cp -R ${BINPATH}/iPhoneSimulator${SDKVERSION}-i386.sdk/include/ ${OUTPATH}/prebuilt/include/ios
 
 # mac
 cp ${BINPATH}/mac-x86_64.sdk/lib/libz.a ${OUTPATH}/prebuilt/mac/zlib.a
 $STRIP -S ${OUTPATH}/prebuilt/mac/zlib.a
 $LIPO -info ${OUTPATH}/prebuilt/mac/zlib.a
 
-mkdir -p ${OUTPATH}/prebuilt/mac/include
-cp -R ${BINPATH}/mac-x86_64.sdk/include/ ${OUTPATH}/prebuilt/mac/include
+mkdir -p ${OUTPATH}/prebuilt/include/mac
+cp -R ${BINPATH}/mac-x86_64.sdk/include/ ${OUTPATH}/prebuilt/include/mac
 
 echo "Building all steps done."
 echo "Cleaning up..."
-#rm -rf ${CURRENTPATH}/src
-#rm -rf ${BINPATH}
 echo "Done."

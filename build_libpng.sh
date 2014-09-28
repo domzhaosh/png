@@ -109,7 +109,7 @@ compile_ios_static_library "armv7" "iPhoneOS"
 # #############
 # # iPhoneOS armv7s
 # #############
-compile_ios_static_library "armv7s" "iPhoneOS"
+# compile_ios_static_library "armv7s" "iPhoneOS"
 
 # #############
 # # iPhoneOS arm64
@@ -178,8 +178,8 @@ $LIPO -create ${BINPATH}/iPhoneSimulator${SDKVERSION}-i386.sdk/lib/libpng.a ${BI
 $STRIP -S ${OUTPATH}/prebuilt/ios/libpng.a
 $LIPO -info ${OUTPATH}/prebuilt/ios/libpng.a
 
-mkdir -p ${OUTPATH}/prebuilt/ios/include
-cp -R ${BINPATH}/iPhoneSimulator${SDKVERSION}-i386.sdk/include/ ${OUTPATH}/prebuilt/ios/include
+mkdir -p ${OUTPATH}/prebuilt/include/ios/
+cp -R ${BINPATH}/iPhoneSimulator${SDKVERSION}-i386.sdk/include/ ${OUTPATH}/prebuilt/include/ios
 
 # mac
 mkdir -p ${OUTPATH}/prebuilt/mac
@@ -188,11 +188,9 @@ cp ${BINPATH}/mac-x86_64.sdk/lib/libpng.a ${OUTPATH}/prebuilt/mac/libpng.a
 $STRIP -S ${OUTPATH}/prebuilt/mac/libpng.a
 $LIPO -info ${OUTPATH}/prebuilt/mac/libpng.a
 
-mkdir -p ${OUTPATH}/prebuilt/mac/include
-cp -R ${BINPATH}/mac-x86_64.sdk/include/ ${OUTPATH}/prebuilt/mac/include
+mkdir -p ${OUTPATH}/prebuilt/include/mac
+cp -R ${BINPATH}/mac-x86_64.sdk/include/ ${OUTPATH}/prebuilt/include/mac
 
 echo "Building all steps done."
 echo "Cleaning up..."
-#rm -rf ${CURRENTPATH}/src
-#rm -rf ${BINPATH}
 echo "Done."
