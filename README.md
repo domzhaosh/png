@@ -11,20 +11,20 @@ libpng
 ### Build IOS & Mac static library
 
 ```
-cd ios_mac
-./build_zlib.sh
-./build_libpng.sh
+./build_iosmac.sh
 ```
 
 ### Build Android static library
 At first, you should configure your NDK_ROOT and ANDROID_SDK_ROOT environment variable.
 
 ```
-cd android
-./libpng.sh
+./build_android.sh
 ```
 
 ### Build Linux library
+```cpp
+./build_linux.sh
+```
 
 
 ### Build Win32 library
