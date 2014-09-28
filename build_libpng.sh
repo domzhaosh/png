@@ -31,7 +31,7 @@ if [ -d ${BINPATH} ]; then
 	rm -rf ${BINPATH}
 fi
 
-cd "${CURRENTPATH}/../libpng"
+cd "${CURRENTPATH}/libpng"
 
 
 # set the compilers
@@ -173,7 +173,7 @@ echo "Build universal library..."
 
 mkdir -p ${OUTPATH}/prebuilt/ios
 # ios
-$LIPO -create ${BINPATH}/iPhoneSimulator${SDKVERSION}-i386.sdk/lib/libpng.a ${BINPATH}/iPhoneSimulator${SDKVERSION}-x86_64.sdk/lib/libpng.a ${BINPATH}/iPhoneOS${SDKVERSION}-armv7.sdk/lib/libpng.a  ${BINPATH}/iPhoneOS${SDKVERSION}-armv7s.sdk/lib/libpng.a ${BINPATH}/iPhoneOS${SDKVERSION}-arm64.sdk/lib/libpng.a -output ${OUTPATH}/prebuilt/ios/libpng.a
+$LIPO -create ${BINPATH}/iPhoneSimulator${SDKVERSION}-i386.sdk/lib/libpng.a ${BINPATH}/iPhoneSimulator${SDKVERSION}-x86_64.sdk/lib/libpng.a ${BINPATH}/iPhoneOS${SDKVERSION}-armv7.sdk/lib/libpng.a   ${BINPATH}/iPhoneOS${SDKVERSION}-arm64.sdk/lib/libpng.a -output ${OUTPATH}/prebuilt/ios/libpng.a #${BINPATH}/iPhoneOS${SDKVERSION}-armv7s.sdk/lib/libpng.a
 # remove debugging info
 $STRIP -S ${OUTPATH}/prebuilt/ios/libpng.a
 $LIPO -info ${OUTPATH}/prebuilt/ios/libpng.a

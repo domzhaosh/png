@@ -32,7 +32,7 @@ if [ -d ${BINPATH} ]; then
 fi
 
 # TODO:  if the zlib path is changed, we should change it here
-cd "${CURRENTPATH}/../zlib-1.2.8"
+cd "${CURRENTPATH}/zlib-1.2.8"
 
 
 # set the compilers
@@ -159,7 +159,7 @@ echo "Build universal library..."
 
 mkdir -p ${OUTPATH}/prebuilt/ios
 # ios
-$LIPO -create ${BINPATH}/iPhoneSimulator${SDKVERSION}-i386.sdk/lib/libz.a ${BINPATH}/iPhoneSimulator${SDKVERSION}-x86_64.sdk/lib/libz.a ${BINPATH}/iPhoneOS${SDKVERSION}-armv7.sdk/lib/libz.a  ${BINPATH}/iPhoneOS${SDKVERSION}-armv7s.sdk/lib/libz.a ${BINPATH}/iPhoneOS${SDKVERSION}-arm64.sdk/lib/libz.a -output ${OUTPATH}/prebuilt/ios/zlib.a
+$LIPO -create ${BINPATH}/iPhoneSimulator${SDKVERSION}-i386.sdk/lib/libz.a ${BINPATH}/iPhoneSimulator${SDKVERSION}-x86_64.sdk/lib/libz.a ${BINPATH}/iPhoneOS${SDKVERSION}-armv7.sdk/lib/libz.a  ${BINPATH}/iPhoneOS${SDKVERSION}-arm64.sdk/lib/libz.a -output ${OUTPATH}/prebuilt/ios/zlib.a #${BINPATH}/iPhoneOS${SDKVERSION}-armv7s.sdk/lib/libz.a
 # remove debugging info
 $STRIP -S ${OUTPATH}/prebuilt/ios/zlib.a
 $LIPO -info ${OUTPATH}/prebuilt/ios/zlib.a
@@ -168,6 +168,7 @@ mkdir -p ${OUTPATH}/prebuilt/include/ios
 cp -R ${BINPATH}/iPhoneSimulator${SDKVERSION}-i386.sdk/include/ ${OUTPATH}/prebuilt/include/ios
 
 # mac
+mkdir -p ${OUTPATH}/prebuilt/mac
 cp ${BINPATH}/mac-x86_64.sdk/lib/libz.a ${OUTPATH}/prebuilt/mac/zlib.a
 $STRIP -S ${OUTPATH}/prebuilt/mac/zlib.a
 $LIPO -info ${OUTPATH}/prebuilt/mac/zlib.a
