@@ -11,8 +11,17 @@ export ANT_ROOT=/usr/local/bin
 export NDK_MODULE_PATH=`pwd`
 echo $NDK_MODULE_PATH
 
+cp libpng/scripts/pnglibconf.h.prebuilt  libpng/pnglibconf.h
 cd android/libpng
 
 NDK-build
+
+cd ../../
+
+rm -rf android/libpng/obj/local/armeabi-v7a/objs/
+rm -rf android/libpng/obj/local/armeabi/objs/
+rm -rf android/libpng/obj/local/x86/objs/
+
+mv android/libpng/obj/local/* prebuilt/android/
 
 
