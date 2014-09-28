@@ -11,6 +11,7 @@ export ANT_ROOT=/usr/local/bin
 export NDK_MODULE_PATH=`pwd`
 echo $NDK_MODULE_PATH
 
+echo "patching the pnglibconf.h.. we simply rename pnglibconf.h.prebuilt to pnglibconf.h"
 cp libpng/scripts/pnglibconf.h.prebuilt  libpng/pnglibconf.h
 cd android/libpng
 
