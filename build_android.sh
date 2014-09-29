@@ -9,74 +9,66 @@ sh $ANDROID_NDK/build/tools/make-standalone-toolchain.sh --platform=android-$AND
 # generate thte android toolchain of x86
 sh $ANDROID_NDK/build/tools/make-standalone-toolchain.sh --platform=android-$ANDROID_API_LEVEL --install-dir=./android-toolchain-x86 --system=darwin-x86_64 --ndk-dir="${ANDROID_NDK}" --toolchain=x86-4.8
 
-export PATH=`pwd`/android-toolchain/bin:$PATH
-echo $PATH
 
-CC=arm-linux-androideabi-gcc
-CXX=arm-linux-androideabi-g++
-outputpath=`pwd`/androidoutput
-echo $outputpath
-android_system_root=`pwd`/android-toolchain/sysroot
-echo "sysroot is $android_system_root"
+build_with_arch()
+{
+    export PATH=`pwd`/$ndk_toolchain_path/bin:$PATH
+    echo $PATH
+
+    CC=$toolname_prefix-gcc
+    CXX=$toolname_prefix-g++
+    outputpath=`pwd`/androidoutput
+    echo $outputpath
+    android_system_root=`pwd`/$ndk_toolchain_path/sysroot
+    echo "sysroot is $android_system_root"
+
+    rm -rf $outputpath
+
+    # build for armeabi-v7a
+    CFLAGS=$arch_cflags
+    echo "CFLAGS is "$CFLAGS
+    LDFLAGS=$arch_ldflags
+    echo "LDFLAGS is "$LDFLAGS
+
+    cd libpng/
+    make clean
+    ./configure --prefix=$outputpath --enable-static=yes --host=$toolname_prefix
+    make
+    make install
+
+    #strip and copy
+    cd ..
+    $toolname_prefix-strip --strip-unneeded $outputpath/lib/libpng16.a
+    mkdir -p prebuilt/android/$release_arch_dir
+    cp $outputpath/lib/libpng16.a prebuilt/android/$release_arch_dir/libpng.a
+}
 
 
-# build for armeabi-v7a
-CFLAGS="--sysroot=$android_system_root -march=armv7-a -mfloat-abi=softfp -mfpu=vfpv3-d16"
-LDFLAGS="--sysroot=$android_system_root -march=armv7-a -Wl,--fix-cortex-a8"
-
-cd libpng/
-make clean
-./configure --prefix=$outputpath --enable-static=yes --host=arm-linux-androideabi
-make
-make install
-
-#strip and copy
-cd ..
-arm-linux-androideabi-strip --strip-unneeded $outputpath/lib/libpng16.a
-mkdir -p prebuilt/android/armeabi-v7a
-cp $outputpath/lib/libpng16.a prebuilt/android/armeabi-v7a/libpng.a
-
+#build for armeabi-v7a
+release_arch_dir=armeabi-v7a
+toolname_prefix=arm-linux-androideabi
+ndk_toolchain_path="android-toolchain"
+arch_cflags="-march=armv7-a -mfloat-abi=softfp -mfpu=vfpv3-d16"
+arch_ldflags="-march=armv7-a -Wl,--fix-cortex-a8"
+build_with_arch
 
 # build for armeabi
-rm -rf $outputpath
-CFLAGS="--sysroot=$android_system_root -march=armv5te -mtune=xscale -msoft-float"
-LDFLAGS="--sysroot=$android_system_root"
-
-cd libpng/
-make clean
-./configure --prefix=$outputpath --enable-static=yes --host=arm-linux-androideabi
-make
-make install
-
-#strip and copy
-cd ..
-arm-linux-androideabi-strip --strip-unneeded $outputpath/lib/libpng16.a
-mkdir -p prebuilt/android/armeabi
-cp $outputpath/lib/libpng16.a prebuilt/android/armeabi/libpng.a
+release_arch_dir=armeabi
+toolname_prefix=arm-linux-androideabi
+ndk_toolchain_path="android-toolchain"
+arch_cflags="-march=armv5te -mtune=xscale -msoft-float"
+arch_ldflags=""
+build_with_arch
 
 # build for x86
 echo "buid for x86..."
-export PATH=`pwd`/android-toolchain-x86/bin:$PATH
-echo $PATH
+release_arch_dir=x86
+toolname_prefix=i686-linux-android
+ndk_toolchain_path="android-toolchain-x86"
+arch_cflags=""
+arch_ldflags=""
+build_with_arch
 
-CC=i686-linux-android-gcc
-CXX=i686-linux-android-g++
-android_system_root=`pwd`/android-toolchain-x86/sysroot
-echo "sysroot is $android_system_root"
-rm -rf $outputpath
-CFLAGS="--sysroot=$android_system_root"
-LDFLAGS="--sysroot=$android_system_root"
-
-cd libpng/
-make clean
-./configure --prefix=$outputpath --enable-static=yes --host=i686-linux-android
-make
-make install
-
-#strip and copy
-cd ..
-i686-linux-android-strip --strip-unneeded $outputpath/lib/libpng16.a
-mkdir -p prebuilt/android/x86
-cp $outputpath/lib/libpng16.a prebuilt/android/x86/libpng.a
+echo "copy include file..."
 mkdir -p prebuilt/include/android
-cp $outputpath/include/* prebuilt/include/android
+cp $outputpath/include/* prebuilt/include/android/
