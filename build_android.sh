@@ -33,12 +33,13 @@ build_with_arch()
     cd libpng/
     make clean
     ./configure --prefix=$outputpath --enable-static=yes --host=$toolname_prefix
-    make
+    make 
     make install
 
     #strip and copy
     cd ..
-    $toolname_prefix-strip --strip-unneeded $outputpath/lib/libpng16.a
+    #WE can't strip it : http://stackoverflow.com/questions/15247569/warning-cannot-scan-executable-section-for-cortex-a8-erratum-because-it-has-no
+    # $toolname_prefix-strip --strip-unneeded $outputpath/lib/libpng16.a
     mkdir -p prebuilt/android/$release_arch_dir
     cp $outputpath/lib/libpng16.a prebuilt/android/$release_arch_dir/libpng.a
 }
@@ -48,7 +49,7 @@ build_with_arch()
 release_arch_dir=armeabi-v7a
 toolname_prefix=arm-linux-androideabi
 ndk_toolchain_path="android-toolchain"
-arch_cflags="-march=armv7-a -mfloat-abi=softfp -mfpu=vfpv3-d16"
+arch_cflags="-march=armv7-a -mfloat-abi=softfp -mfpu=vfpv3-d16 -mthumb -O3"
 arch_ldflags="-march=armv7-a -Wl,--fix-cortex-a8"
 build_with_arch
 
@@ -56,7 +57,7 @@ build_with_arch
 release_arch_dir=armeabi
 toolname_prefix=arm-linux-androideabi
 ndk_toolchain_path="android-toolchain"
-arch_cflags="-march=armv5te -mtune=xscale -msoft-float"
+arch_cflags="-march=armv5te -mtune=xscale -msoft-float -mthumb -Os"
 arch_ldflags=""
 build_with_arch
 
@@ -65,7 +66,7 @@ echo "buid for x86..."
 release_arch_dir=x86
 toolname_prefix=i686-linux-android
 ndk_toolchain_path="android-toolchain-x86"
-arch_cflags=""
+arch_cflags="-O3"
 arch_ldflags=""
 build_with_arch
 
