@@ -1,7 +1,5 @@
 #!/bin/sh
 
-cd ios_mac/
-
 sh build_zlib.sh
 sh build_libpng.sh
 
