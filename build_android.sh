@@ -1,28 +1,35 @@
 #!/bin/sh
 
-# we must specify the ndk root first before running this scripts
-# export NDK_ROOT=/Users/guanghui/AndroidDev/android-ndk-r9d/
-# export PATH=$NDK_ROOT:$PATH
-# export ANDROID_SDK_ROOT=/Users/guanghui/AndroidDev/adt-bundle-mac-x86_64-20130522/sdk/
-source ~/.bash_profile
-export PATH=$ANDROID_SDK_ROOT:$PATH
-export PATH=$ANDROID_SDK_ROOT/tools:$ANDROID_SDK_ROOT/platform-tools:$PATH
-export ANT_ROOT=/usr/local/bin
-export NDK_MODULE_PATH=`pwd`
-echo $NDK_MODULE_PATH
+source ~/.bashrc
+ANDROID_API_LEVEL=19
 
-echo "patching the pnglibconf.h.. we simply rename pnglibconf.h.prebuilt to pnglibconf.h"
-cp libpng/scripts/pnglibconf.h.prebuilt  libpng/pnglibconf.h
-cd android/libpng
+# generate the android toolchain of arm
+sh $ANDROID_NDK/build/tools/make-standalone-toolchain.sh --platform=android-$ANDROID_API_LEVEL --install-dir=./android-toolchain --system=darwin-x86_64 --ndk-dir="${ANDROID_NDK}" --toolchain=arm-linux-androideabi-4.8
 
-NDK-build
+# generate thte android toolchain of x86
+sh $ANDROID_NDK/build/tools/make-standalone-toolchain.sh --platform=android-$ANDROID_API_LEVEL --install-dir=./android-toolchain-x86 --system=darwin-x86_64 --ndk-dir="${ANDROID_NDK}" --toolchain=x86-4.8
 
-cd ../../
+export PATH=`pwd`/android-toolchain/bin:$PATH
+echo $PATH
 
-rm -rf android/libpng/obj/local/armeabi-v7a/objs/
-rm -rf android/libpng/obj/local/armeabi/objs/
-rm -rf android/libpng/obj/local/x86/objs/
+# build for armeabi-v7a
+CC=arm-linux-androideabi-gcc
+CXX=arm-linux-androideabi-g++
+outputpath=`pwd`/androidoutput
+echo $outputpath
+android_system_root=`pwd`/android-toolchain/sysroot
+echo "sysroot is $android_system_root"
+CFLAGS="-isysroot $android_system_root -march=armv7-a -mfloat-abi=softfp -mfpu=vfpv3-d16"
+LDFLAGS="-isysroot $android_system_root -march=armv7-a -Wl,--fix-cortex-a8"
 
-mv android/libpng/obj/local/* prebuilt/android/
+cd libpng/
+./configure --prefix=$outputpath --enable-static=yes --host=arm-linux-androideabi --with-sysroot=$android_system_root
+make
+make install
+
+#strip and copy
+arm-linux-androideabi-strip $outputpath/lib/libpng16.a
+mkdir -p prebuilt/android/armeabi-v7a
+cp $outputpat/lib/libpng16.a prebuilt/android/armeabi-v7a/
 
 
