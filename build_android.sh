@@ -57,7 +57,7 @@ build_with_arch
 release_arch_dir=armeabi
 toolname_prefix=arm-linux-androideabi
 ndk_toolchain_path="android-toolchain"
-arch_cflags="-march=armv5te -mtune=xscale -msoft-float -mthumb -Os"
+arch_cflags="-march=armv5te -mtune=xscale -msoft-float -mthumb -O3"
 arch_ldflags=""
 build_with_arch
 
